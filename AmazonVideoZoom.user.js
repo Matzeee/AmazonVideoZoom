@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        Amazon Video Zoom
 // @namespace   amazon.tld
-// @version     1
-// @description Pressing F2 removes unnecessary black bars by adding the style "object-fit:cover". Especially useful with 21:9 monitors.
+// @version     1.1
+// @description Pressing F2 removes unnecessary black bars by zooming in. Especially useful with 21:9 monitors.
 // @include     https://www.amazon.tld/*
 // @grant       none
 // ==/UserScript==
@@ -16,22 +16,17 @@
 //
 
 var toggleZoom = function () {
-    // Matches #videoContainer_xyz > video:nth-child(1)
-    var videos = [  document.querySelector('div[id^=videoContainer_] > video:nth-child(1)'),
-                    document.querySelector('div[id^=videoContainer_] > video:nth-child(2)')];
+    // Matches all childs: #videoContainer_xyz > video:nth-child(n)
+    var videos = document.querySelectorAll('div[id^=videoContainer_] > video:nth-child(n)');
     if (this.zoomed) {
-        videos.forEach(
-            function each(video) {
-                video.style.removeProperty('object-fit');
-            }
-        );
+        [].forEach.call(videos, function (video) {
+            video.style.removeProperty('object-fit');
+        });
         this.zoomed = false;
     } else {
-        videos.forEach(
-            function each(video) {
-                video.setAttribute('style', ';object-fit:cover;');
-            }
-        );
+        [].forEach.call(videos, function (video) {
+            video.setAttribute('style', ';object-fit:cover;');
+        });
         this.zoomed = true;
     }
 };
